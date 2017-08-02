@@ -8,6 +8,10 @@ var playState = {
     this.scoreText = game.add.text(850, 16, 'Score: ' + score, { fontSize: '16px', fill: '#fff' });
     this.levelText = game.add.text(16, 16, 'Level: ' + level, { fontSize: '16px', fill: '#fff' });
     this.livesText = game.add.text(16, 32, 'Lives: ' + lives, { fontSize: '16px', fill: '#fff' });
+
+    var block = game.add.sprite(280, 280, 'block');
+    block.inputEnabled = true;
+    block.input.enableDrag(true);
   },
   update:function(){
     this.collisions();
@@ -26,6 +30,5 @@ var playState = {
   },
 
   render:function(){
-
   }
 }
