@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Multiplayer Game</title>
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="js/phaser.js"></script>
     <!--Put States Between These Two Comments-->
     <script type="text/javascript" src="js/states/bootState.js"></script>
@@ -12,7 +13,10 @@
     <script type="text/javascript" src="js/game.js"></script>
   </head>
   <body>
-    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+    </script>
     <div id="game"></div>
+    <script type="text/javascript" src="js/client.js"></script>
   </body>
 </html>

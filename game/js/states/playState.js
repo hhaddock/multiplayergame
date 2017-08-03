@@ -1,34 +1,51 @@
-var score = 0;
-var lives = 3;
-var level = 1;
-var asteroids = 10;
+var playState = {};
 
-var playState = {
-  create:function(){
-    this.scoreText = game.add.text(850, 16, 'Score: ' + score, { fontSize: '16px', fill: '#fff' });
-    this.levelText = game.add.text(16, 16, 'Level: ' + level, { fontSize: '16px', fill: '#fff' });
-    this.livesText = game.add.text(16, 32, 'Lives: ' + lives, { fontSize: '16px', fill: '#fff' });
+playState.init = function(){
+  game.stage.disableVisibilityChange = true;
+}
 
-    var block = game.add.sprite(280, 280, 'block');
-    block.inputEnabled = true;
-    block.input.enableDrag(true);
-  },
-  update:function(){
-    this.collisions();
+playState.create = function(){
+  game.input.mouse.capture = true;
+  //Test Text
+  this.scoreText = game.add.text(game.world.centerX - 100, 16, 'Alpha Version 1.0', { fontSize: '16px', fill: '#fff' });
+  //console.log for testing
+  console.log("In playState");
+  //array of all players id, x, y
+  this.playerMap = {};
+  //ask the server to add a new player
+  Client.askNewPlayer();
+};
 
-
-  },
-
-  collisions:function(){
-    // game.physics.arcade.overlap(this.player.bullets, this.asteroids, this.astKill, null, this);
-    // game.physics.arcade.overlap(this.player, this.asteroids, this.playerKill, null, this);
-  },
-
-
-  debug:function(asteroid){
-
-  },
-
-  render:function(){
+playState.update = function(){
+  if (game.input.keyboard.justPressed(Phaser.Keyboard.ENTER))
+  {
+    playState.getCoordinates();
   }
+};
+
+playState.getCoordinates = function(){
+  Client.sendClick(playState.getRandNum(100,500), playState.getRandNum(100,500));
+}
+
+playState.movePlayer = function(id, x, y){
+  var player = playState.playerMap[id];
+  var tween = game.add.tween(player);
+  tween.to({x:x,y:y});
+  tween.start();
+  console.log("Player has moved")
+};
+
+playState.addNewPlayer = function(id,x,y){
+    playState.playerMap[id] = game.add.sprite(x,y,'block');
+    console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
+};
+
+playState.removePlayer = function(id){
+    console.log("Deleted Player " + id);
+    playState.playerMap[id].destroy();
+    delete playState.playerMap[id];
+};
+
+playState.getRandNum = function(min, max){
+  return Math.random() * (max - min) + min;
 }

@@ -1,8 +1,9 @@
-var bootState = {
-  create:function(){
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.world.bounds.setTo(0,0, 960, 576);
+var bootState = {};
 
-    game.state.start('load');
-  }
+bootState.create = function() {
+  game.physics.startSystem(Phaser.Physics.ARCADE);
+  game.world.bounds.setTo(0,0, 960, 576);
+
+  game.state.start('load');
+  console.log("In bootState");
 }

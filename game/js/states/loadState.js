@@ -1,8 +1,10 @@
-var loadState = {
-  preload:function(){
-    game.load.image('block', 'assets/block.png');
-  },
-  create:function(){
-    game.state.start('play');
-  }
+var loadState = {};
+
+loadState.preload = function(){
+  game.load.image('block', 'assets/block.png');
+}
+
+loadState.create = function(){
+  console.log("In loadState");
+  game.state.start('play');
 }

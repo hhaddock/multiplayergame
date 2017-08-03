@@ -5,4 +5,3 @@ game.state.add('load', loadState);
 game.state.add('play', playState);
 
 game.state.start('boot');
-console.log("TEst");
