@@ -6,13 +6,12 @@ Client.askNewPlayer = function(){
     Client.socket.emit('newplayer');
 };
 
-Client.sendClick = function(x,y){
-  console.log(x + ", " + y);
-  Client.socket.emit('click',{x:x,y:y});
-};
-
 Client.sendUpdate = function(speed, dir){
   Client.socket.emit('updatePos', {speed: speed, dir: dir});
+}
+
+Client.sendRot = function(x, y){
+  Client.socket.emit('updateRot', {x: x, y: y});
 }
 
 //Socket Client Catches
@@ -32,6 +31,11 @@ Client.socket.on('allplayers',function(data){
 
     Client.socket.on('update',function(data){
         playState.movePlayer(data.id,data.x,data.y, data.dir);
+    });
+
+    Client.socket.on('updateRot',function(data){
+        // playState.movePlayer(data.id,data.x,data.y, data.dir);
+        console.log(data.id + " : " + data.angle);
     });
 
     Client.socket.on('remove',function(id){

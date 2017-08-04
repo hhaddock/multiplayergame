@@ -16,15 +16,13 @@ playState.create = function(){
 };
 
 playState.update = function(){
-  if(game.input.keyboard.justPressed(Phaser.Keyboard.ENTER)) {
-    playState.getCoordinates();
-  }
   playState.playerMovement();
+  playState.playerRot();
 };
 
-playState.getCoordinates = function(){
-  Client.sendClick(playState.getRandNum(100,500), playState.getRandNum(100,500));
-}
+playState.playerRot = function(){
+  Client.sendRot(game.input.mousePointer.x, game.input.mousePointer.y);
+};
 
 playState.playerMovement = function() {
   if(game.input.keyboard.isDown(Phaser.Keyboard.A) && game.input.keyboard.isDown(Phaser.Keyboard.W))
@@ -48,17 +46,12 @@ playState.playerMovement = function() {
     playState.getPlayerLocation(speed, "down");
 }
 
-playState.getPlayerRotation = function(){
-
-}
-
 playState.getPlayerLocation = function(speed, dir){
   Client.sendUpdate(speed, dir);
 }
 
 playState.movePlayer = function(id, x, y, dir){
   var player = playState.playerMap[id];
-  console.log(dir);
   if(dir == "left")
     player.x -= speed;
   else if(dir == "right")

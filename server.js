@@ -23,7 +23,8 @@ io.on('connection',function(socket){
             id: server.lastPlayderID++,
             x: randomInt(100,400),
             y: randomInt(100,400),
-            dir: "up"
+            dir: "up",
+            angle: 0
         };
         socket.emit('allplayers',getAllPlayers());
         socket.broadcast.emit('newplayer', socket.player);
@@ -31,6 +32,12 @@ io.on('connection',function(socket){
         socket.on('updatePos', function(data){
           socket.player.dir = data.dir;
           io.emit('update',socket.player);
+        });
+
+        socket.on('updateRot', function(data){
+          
+          io.emit('updateRot', socket.player);
+          console.log(socket.player);
         });
 
         socket.on('disconnect',function(){
