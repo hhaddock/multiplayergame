@@ -50,6 +50,12 @@ playState.getPlayerLocation = function(speed, dir){
   Client.sendUpdate(speed, dir);
 }
 
+playState.rotatePlayer = function(id, angle){
+  var player = playState.playerMap[id];
+  player.angle = angle;
+  console.log(angle);
+}
+
 playState.movePlayer = function(id, x, y, dir){
   var player = playState.playerMap[id];
   if(dir == "left")
@@ -64,6 +70,8 @@ playState.movePlayer = function(id, x, y, dir){
 
 playState.addNewPlayer = function(id,x,y){
     playState.playerMap[id] = game.add.sprite(x,y,'block');
+    playState.playerMap[id].anchor.x = 0.5;
+    playState.playerMap[id].anchor.y = 0.5;
     console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
 };
 

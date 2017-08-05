@@ -35,9 +35,8 @@ io.on('connection',function(socket){
         });
 
         socket.on('updateRot', function(data){
-          
+          socket.player.angle = Math.atan2(data.y - socket.player.y, data.x - socket.player.x) * 180 / Math.PI;
           io.emit('updateRot', socket.player);
-          console.log(socket.player);
         });
 
         socket.on('disconnect',function(){

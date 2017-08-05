@@ -35,7 +35,8 @@ Client.socket.on('allplayers',function(data){
 
     Client.socket.on('updateRot',function(data){
         // playState.movePlayer(data.id,data.x,data.y, data.dir);
-        console.log(data.id + " : " + data.angle);
+        //console.log(data.id + " : " + data.angle);
+        playState.rotatePlayer(data.id, data.angle);
     });
 
     Client.socket.on('remove',function(id){
