@@ -7,11 +7,15 @@ Client.askNewPlayer = function(){
 };
 
 Client.sendUpdate = function(speed, dir){
-  Client.socket.emit('updatePos', {speed: speed, dir: dir});
+    Client.socket.emit('updatePos', {speed: speed, dir: dir});
 }
 
 Client.sendRot = function(x, y){
-  Client.socket.emit('updateRot', {x: x, y: y});
+    Client.socket.emit('updateRot', {x: x, y: y});
+}
+
+Client.sendMouse = function( data ) {
+    Client.socket.emit( 'moveToMouse', { status: data } );
 }
 
 //Socket Client Catches
@@ -34,9 +38,11 @@ Client.socket.on('allplayers',function(data){
     });
 
     Client.socket.on('updateRot',function(data){
-        // playState.movePlayer(data.id,data.x,data.y, data.dir);
-        //console.log(data.id + " : " + data.angle);
-        playState.rotatePlayer(data.id, data.angle);
+        playState.rotatePlayer( data.id, data.x, data.y );
+    });
+
+    Client.socket.on( 'moveToMouse', function( data ) {
+        playState.movePlayerToMouse( data.plyr.id, data.status );
     });
 
     Client.socket.on('remove',function(id){

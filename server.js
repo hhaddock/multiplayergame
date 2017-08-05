@@ -35,8 +35,11 @@ io.on('connection',function(socket){
         });
 
         socket.on('updateRot', function(data){
-          socket.player.angle = Math.atan2(data.y - socket.player.y, data.x - socket.player.x) * 180 / Math.PI;
-          io.emit('updateRot', socket.player);
+            io.emit('updateRot', { id: socket.player.id, x: data.x, y: data.y });
+        });
+
+        socket.on( 'moveToMouse', function( data ) {
+            io.emit( 'moveToMouse', { plyr: socket.player, status: data.status } );
         });
 
         socket.on('disconnect',function(){
