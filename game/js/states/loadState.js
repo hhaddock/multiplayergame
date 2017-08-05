@@ -1,7 +1,7 @@
 var loadState = {};
 
 loadState.preload = function(){
-  game.load.image('block', 'assets/test.png');
+  game.load.image('block', 'assets/dir.png');
 }
 
 loadState.create = function(){
