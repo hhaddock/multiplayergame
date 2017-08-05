@@ -52,10 +52,10 @@ playState.mouseMove = function() {
     }
 };
 
-playState.movePlayerToMouse = function( id, moving ) {
+playState.movePlayerToMouse = function( id, mouse_drag ) {
     var player = playState.playerMap[ id ];
 
-    if( moving ) {
+    if( mouse_drag ) {
         /* If true was passed by mouseMove() then begin moving the player
          * towards mouse position.
          */
@@ -142,9 +142,11 @@ playState.movePlayer = function(id, x, y, dir){
 
 playState.addNewPlayer = function(id,x,y){
     playState.playerMap[id] = game.add.sprite(x,y,'block');
-    /* Added this line to enable the drag functionality
+    /* Added these lines to enable the drag functionality and for world
+     * bounds collisions.
      */
     game.physics.enable( playState.playerMap[id], Phaser.Physics.ARCADE );
+    playState.playerMap[id].body.collideWorldBounds = true;
     playState.playerMap[id].anchor.set( 0.5 );
     console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
 };
