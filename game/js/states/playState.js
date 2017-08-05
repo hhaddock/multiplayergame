@@ -1,7 +1,6 @@
 var playState = {};
 var Keys = {};
 var speed = 2;
-var weapon;
 
 playState.init = function(){
     game.stage.disableVisibilityChange = true;
@@ -11,9 +10,8 @@ playState.create = function(){
     game.input.mouse.capture = true;
 
     this.alphaText = game.add.text(game.world.centerX - 100, 10, 'Alpha Version 1.0', { fontSize: '16px', fill: '#fff' });
-    console.log("In playState");
     //Create array of players
-    this.playerMap = {};
+    this.playerMap = game.add.group();
     //ask the server to add a new player
     Client.askNewPlayer();
 
@@ -28,20 +26,37 @@ playState.create = function(){
         SHIFT : game.input.keyboard.addKey(Phaser.Keyboard.SHIFT),
         FIRE  : game.input.activePointer.leftButton
     };
-
+    this.enemy = game.add.sprite(500,500, 'block');
+    game.physics.enable( this.enemy, Phaser.Physics.ARCADE );
+    this.enemy.body.collideWorldBounds = true;
 };
 
 playState.update = function(){
+    game.physics.arcade.collide(playState.playerMap);
     playState.playerMovement();
     // playState.mouseMove();
     playState.playerRot();
+    playState.sendCollisions();
+
     if(Keys.FIRE.isDown){
-     weapon.fire();
+      playState.sendFire();
     }
+
 };
 
-playState.fireWeapon = function(){
- playState.weapon.fire();
+playState.sendCollisions = function(){
+  game.physics.arcade.collide(playState.playerMap[0], this.enemy);
+}
+
+playState.sendFire = function(){
+ Client.sendFire();
+}
+
+playState.playerFire = function(id, fire){
+  var player = playState.playerMap[id];
+  if(fire){
+    player.weapon.fire();
+  }
 }
 
 playState.mouseMove = function() {
@@ -146,6 +161,7 @@ playState.movePlayer = function(id, x, y, dir){
         player.y -= speed;
     else if(dir == "down")
         player.y += speed;
+    game.physics.arcade.overlap(player.weapon.bullets, this.enemy, Client.sendOverlap);
 };
 
 playState.addNewPlayer = function(id,x,y){
@@ -156,15 +172,23 @@ playState.addNewPlayer = function(id,x,y){
     game.physics.enable( playState.playerMap[id], Phaser.Physics.ARCADE );
     playState.playerMap[id].body.collideWorldBounds = true;
     playState.playerMap[id].anchor.set( 0.5 );
-    
-    weapon = game.add.weapon(30, 'bullet');
-    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-    weapon.bulletSpeed = 600;
-    weapon.fireRate = 100;
-    weapon.trackSprite(playState.playerMap[id], 0, 0, true);
+    //Weapon Information
+    playState.playerMap[id].weapon = game.add.weapon(30, 'bullet');
+    playState.playerMap[id].weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    playState.playerMap[id].weapon.bulletSpeed = 1200;
+    playState.playerMap[id].weapon.fireRate = 100;
+    playState.playerMap[id].weapon.trackSprite(playState.playerMap[id], 45, 25, true);
+    //name plate
+    this.namePlate = game.add.text(-2, 30, 'Player ' + (id + 1), { fontSize: '10px', fill: '#fff' });
+    playState.playerMap[id].addChild(this.namePlate);
+    // console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
 
-    console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
+    console.log(playState.playerMap[id].weapon);
 };
+
+playState.shotHit = function(){
+  this.enemy.kill();
+}
 
 playState.removePlayer = function(id){
     console.log("Deleted Player " + id);
@@ -174,4 +198,8 @@ playState.removePlayer = function(id){
 
 playState.getRandNum = function(min, max){
     return Math.random() * (max - min) + min;
+}
+
+playState.render = function(){
+  // game.debug.body(this.enemy);
 }

@@ -42,6 +42,14 @@ io.on('connection',function(socket){
             io.emit( 'moveToMouse', { plyr: socket.player, status: data.status } );
         });
 
+        socket.on('playerFire', function(data){
+          io.emit('playerFire', {id: socket.player.id, fire: data.fire});
+        });
+
+        socket.on('shotHit', function(data){
+          io.emit('shotHit', {id: socket.player.id});
+        });
+
         socket.on('disconnect',function(){
           io.emit('remove',socket.player.id);
         });

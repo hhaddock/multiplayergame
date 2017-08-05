@@ -18,6 +18,15 @@ Client.sendMouse = function( data ) {
     Client.socket.emit( 'moveToMouse', { status: data } );
 }
 
+Client.sendFire = function(){
+  Client.socket.emit('playerFire', {fire: true});
+}
+
+Client.sendOverlap = function(){
+  Client.socket.emit('shotHit');
+  console.log("hit");
+}
+
 //Socket Client Catches
 Client.socket.on('newplayer',function(data){
     playState.addNewPlayer(data.id,data.x,data.y);
@@ -43,6 +52,14 @@ Client.socket.on('allplayers',function(data){
   Client.socket.on( 'moveToMouse', function( data ) {
     playState.movePlayerToMouse( data.plyr.id, data.status );
   });
+
+  Client.socket.on('playerFire', function(data){
+    playState.playerFire(data.id, data.fire);
+  });
+
+  Client.socket.on('shotHit', function(data){
+    playState.shotHit();
+  })
 
   Client.socket.on('remove',function(id){
     playState.removePlayer(id);
