@@ -69,16 +69,16 @@ playState.movePlayer = function(id, x, y, dir){
 };
 
 playState.addNewPlayer = function(id,x,y){
-    playState.playerMap[id] = game.add.sprite(x,y,'block');
-    playState.playerMap[id].anchor.x = 0.5;
-    playState.playerMap[id].anchor.y = 0.5;
-    console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
+  playState.playerMap[id] = game.add.sprite(x,y,'block');
+  playState.playerMap[id].anchor.x = 0.5;
+  playState.playerMap[id].anchor.y = 0.5;
+  console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
 };
 
 playState.removePlayer = function(id){
-    console.log("Deleted Player " + id);
-    playState.playerMap[id].destroy();
-    delete playState.playerMap[id];
+  console.log("Deleted Player " + id);
+  playState.playerMap[id].destroy();
+  delete playState.playerMap[id];
 };
 
 playState.getRandNum = function(min, max){
