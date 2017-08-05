@@ -24,28 +24,27 @@ Client.socket.on('newplayer',function(data){
 });
 
 Client.socket.on('allplayers',function(data){
-    // console.log(data);
-    for(var i = 0; i < data.length; i++){
-        playState.addNewPlayer(data[i].id,data[i].x,data[i].y);
-    }
+  for(var i = 0; i < data.length; i++){
+    playState.addNewPlayer(data[i].id,data[i].x,data[i].y);
+  }
 
-    Client.socket.on('move',function(data){
-        playState.movePlayer(data.id,data.x,data.y);
-    });
+  Client.socket.on('move',function(data){
+    playState.movePlayer(data.id,data.x,data.y);
+  });
 
-    Client.socket.on('update',function(data){
-        playState.movePlayer(data.id,data.x,data.y, data.dir);
-    });
+  Client.socket.on('update',function(data){
+    playState.movePlayer(data.id,data.x,data.y, data.dir);
+  });
 
-    Client.socket.on('updateRot',function(data){
-        playState.rotatePlayer( data.id, data.x, data.y );
-    });
+  Client.socket.on('updateRot',function(data){
+    playState.rotatePlayer( data.id, data.x, data.y );
+  });
 
-    Client.socket.on( 'moveToMouse', function( data ) {
-        playState.movePlayerToMouse( data.plyr.id, data.status );
-    });
+  Client.socket.on( 'moveToMouse', function( data ) {
+    playState.movePlayerToMouse( data.plyr.id, data.status );
+  });
 
-    Client.socket.on('remove',function(id){
-        playState.removePlayer(id);
-    });
+  Client.socket.on('remove',function(id){
+    playState.removePlayer(id);
+  });
 });
