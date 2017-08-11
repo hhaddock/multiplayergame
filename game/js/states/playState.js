@@ -1,6 +1,6 @@
 var playState = {};
 var Keys = {};
-var speed = 2;
+var speed = 5;
 
 playState.init = function(){
     game.stage.disableVisibilityChange = true;
@@ -9,15 +9,18 @@ playState.init = function(){
 playState.create = function(){
     game.input.mouse.capture = true;
 
-    this.alphaText = game.add.text(game.world.centerX - 100, 10, 'Alpha Version 1.0', { fontSize: '16px', fill: '#fff' });
+    this.bg = game.add.tileSprite(0,0, 2000,2000, 'bg');
+
+    this.alphaText = game.add.text(game.world.centerX, 10, 'Alpha Version 1.0', { fontSize: '16px', fill: '#fff' });
     //Create array of players
     this.playerMap = game.add.group();
+    this.enemyMap = game.add.group();
+
     //ask the server to add a new player
     Client.askNewPlayer();
+    Client.getAllEnemies();
 
-    /* Added this for modularity, and because I got tired of typing
-     * it out every time
-     */
+
     Keys = {
         W     : game.input.keyboard.addKey(Phaser.Keyboard.W),
         A     : game.input.keyboard.addKey(Phaser.Keyboard.A),
@@ -26,27 +29,15 @@ playState.create = function(){
         SHIFT : game.input.keyboard.addKey(Phaser.Keyboard.SHIFT),
         FIRE  : game.input.activePointer.leftButton
     };
-    this.enemy = game.add.sprite(500,500, 'block');
-    game.physics.enable( this.enemy, Phaser.Physics.ARCADE );
-    this.enemy.body.collideWorldBounds = true;
-};
+  };
 
 playState.update = function(){
-    game.physics.arcade.collide(playState.playerMap);
     playState.playerMovement();
-    // playState.mouseMove();
     playState.playerRot();
-    playState.sendCollisions();
-
     if(Keys.FIRE.isDown){
       playState.sendFire();
     }
-
 };
-
-playState.sendCollisions = function(){
-  game.physics.arcade.collide(playState.playerMap[0], this.enemy);
-}
 
 playState.sendFire = function(){
  Client.sendFire();
@@ -57,6 +48,14 @@ playState.playerFire = function(id, fire){
   if(fire){
     player.weapon.fire();
   }
+  game.physics.arcade.overlap(player.weapon.bullets, this.enemy, Client.sendOverlap);
+}
+
+playState.shotHit = function(id, bullet){
+  var player = playState.playerMap[id];
+  this.enemy.kill();
+  bullet.kill();
+  game.camera.shake(0.01, 250);
 }
 
 playState.mouseMove = function() {
@@ -64,13 +63,8 @@ playState.mouseMove = function() {
      * game mechanic to not be able to shoot and sprint at the same time.
      */
     if(game.input.mousePointer.isDown && Keys.SHIFT.isDown){
-        /* Passes true to initiate drag
-         */
         Client.sendMouse(true);
     } else {
-        /* Seems redundant but without passing false the player
-         * continues in the same direction.
-         */
         Client.sendMouse(false);
     }
 };
@@ -97,8 +91,8 @@ playState.movePlayerToMouse = function(id, mouse_drag) {
 };
 
 playState.playerRot = function(){
-    var x = game.input.mousePointer.x;
-    var y = game.input.mousePointer.y;
+    var x = game.input.activePointer.position.x + game.camera.x;
+    var y = game.input.activePointer.position.y + game.camera.y;
     Client.sendRot(x, y);
 };
 
@@ -149,6 +143,7 @@ playState.rotatePlayer = function(id, x, y){
      */
     var player = playState.playerMap[ id ];
     player.angle = Math.atan2( y - player.y, x - player.x ) * 180 / Math.PI;
+    game.physics.arcade.overlap(player.weapon.bullets, this.enemy, Client.sendOverlap);
 }
 
 playState.movePlayer = function(id, x, y, dir){
@@ -161,11 +156,14 @@ playState.movePlayer = function(id, x, y, dir){
         player.y -= speed;
     else if(dir == "down")
         player.y += speed;
+        game.camera.y -= 4;
     game.physics.arcade.overlap(player.weapon.bullets, this.enemy, Client.sendOverlap);
 };
 
 playState.addNewPlayer = function(id,x,y){
+    var player = playState.playerMap[id];
     playState.playerMap[id] = game.add.sprite(x,y,'block');
+    game.camera.follow(playState.playerMap[id]);
     /* Added these lines to enable the drag functionality and for world
      * bounds collisions.
      */
@@ -181,13 +179,12 @@ playState.addNewPlayer = function(id,x,y){
     //name plate
     this.namePlate = game.add.text(-2, 30, 'Player ' + (id + 1), { fontSize: '10px', fill: '#fff' });
     playState.playerMap[id].addChild(this.namePlate);
-    // console.log("Added Player " + id + " " + "("+x + ", "+ y+")");
+}
 
-    console.log(playState.playerMap[id].weapon);
-};
-
-playState.shotHit = function(){
-  this.enemy.kill();
+playState.addEnemy = function(id, x, y){
+  var enemy = playState.enemyMap[id];
+  enemy = game.add.sprite(x,y, 'block');
+  console.log(id + " " + x + " " + y);
 }
 
 playState.removePlayer = function(id){
@@ -201,5 +198,5 @@ playState.getRandNum = function(min, max){
 }
 
 playState.render = function(){
-  // game.debug.body(this.enemy);
+  game.debug.cameraInfo(game.camera, 32, 32);
 }
