@@ -4,7 +4,11 @@ Client.socket = io.connect();
 //Requests from Client to Server
 Client.askNewPlayer = function(){
     Client.socket.emit('newplayer');
-};
+}
+
+Client.getAllEnemies = function(){
+    Client.socket.emit('allEnemies');
+}
 
 Client.sendUpdate = function(speed, dir){
     Client.socket.emit('updatePos', {speed: speed, dir: dir});
@@ -32,10 +36,17 @@ Client.socket.on('newplayer',function(data){
     playState.addNewPlayer(data.id,data.x,data.y);
 });
 
+
 Client.socket.on('allplayers',function(data){
   for(var i = 0; i < data.length; i++){
     playState.addNewPlayer(data[i].id,data[i].x,data[i].y);
   }
+
+  Client.socket.on('allEnemies', function(data){
+    for(var i = 0; i < data.length; i++){
+      playState.addEnemy(data[i].id, data[i].x, data[i].y);
+    }
+  });
 
   Client.socket.on('move',function(data){
     playState.movePlayer(data.id,data.x,data.y);
@@ -58,7 +69,7 @@ Client.socket.on('allplayers',function(data){
   });
 
   Client.socket.on('shotHit', function(data){
-    playState.shotHit();
+    playState.shotHit(data.id);
   })
 
   Client.socket.on('remove',function(id){
