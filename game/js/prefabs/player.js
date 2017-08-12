@@ -34,12 +34,15 @@ Player.prototype.movePlayer = function(id, x, y, dir){
       this.y -= speed;
   else if(dir == "down")
       this.y += speed;
-  game.physics.arcade.overlap(this.weapon.bullets, playState.enemies, Client.sendOverlap);
 }
 
 Player.prototype.rotatePlayer = function(id, x, y){
   this.angle = Math.atan2( y - this.y, x - this.x ) * 180 / Math.PI;
-  game.physics.arcade.overlap(this.weapon.bullets, this.enemy, Client.sendOverlap);
+  game.physics.arcade.overlap(this.weapon.bullets, playState.enemies, Player.getHit, null, this);
+}
+
+Player.getHit = function(bullet, enemy){
+  Client.sendHit(bullet, enemy);
 }
 
 Player.prototype.getPlayer = function(id){
@@ -49,13 +52,19 @@ Player.prototype.getPlayer = function(id){
 Player.prototype.playerFire = function(id, fire){
   if(fire)
     this.weapon.fire();
-  game.physics.arcade.overlap(this.weapon.bullets, this.enemy, Client.sendOverlap);
 }
 
-Player.prototype.shotHit = function(id, enemy, bullet){
-  enemy.kill();
-  bullet.kill();
+Player.prototype.shotHit = function(player, enemy){
+  playState.enemies.forEach(function(en){
+    if(en.id == enemy){
+      en.kill();
+    }
+  });
   game.camera.shake(0.01, 250);
+}
+
+Player.prototype.render = function(){
+  game.debug.body(this);
 }
 
 Player.prototype.movePlayerToMouse = function(id, mouse_drag){

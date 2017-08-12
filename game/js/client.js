@@ -3,19 +3,19 @@ Client.socket = io.connect();
 
 //Requests from Client to Server
 Client.askNewPlayer = function(){
-    Client.socket.emit('newplayer');
+  Client.socket.emit('newplayer');
 }
 
 Client.spawnEnemies = function(){
-    Client.socket.emit('spawnEnemies');
+  Client.socket.emit('spawnEnemies');
 }
 
 Client.sendUpdate = function(speed, dir){
-    Client.socket.emit('updatePos', {speed: speed, dir: dir});
+  Client.socket.emit('updatePos', {speed: speed, dir: dir});
 }
 
 Client.sendRot = function(x, y){
-    Client.socket.emit('updateRot', {x: x, y: y});
+  Client.socket.emit('updateRot', {x: x, y: y});
 }
 
 Client.sendMouse = function( data ) {
@@ -26,13 +26,14 @@ Client.sendFire = function(){
   Client.socket.emit('playerFire', {fire: true});
 }
 
-Client.sendOverlap = function(){
-  Client.socket.emit('shotHit');
+Client.sendHit = function(bullet, enemy){
+  Client.socket.emit('shotHit', {enemy: enemy.id});
+  bullet.kill();
 }
 
 //Socket Client Catches
 Client.socket.on('newplayer',function(data){
-    playState.addNewPlayer(data.id,data.x,data.y);
+  playState.addNewPlayer(data.id,data.x,data.y);
 });
 
 Client.socket.on('allplayers',function(data){
@@ -65,7 +66,8 @@ Client.socket.on('allplayers',function(data){
   });
 
   Client.socket.on('shotHit', function(data){
-    playState.shotHit(data.id);
+    console.log(data);
+    playState.shotHit(data.id, data.player, data.enemy);
   })
 
   Client.socket.on('remove',function(id){

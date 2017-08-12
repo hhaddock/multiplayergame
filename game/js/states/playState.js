@@ -14,7 +14,7 @@ playState.create = function(){
 
     //Create array of players
     this.playerMap = {};
-    this.enemies = {};
+    this.enemies = game.add.group();
 
     //ask the server to add a new play
     Client.askNewPlayer();
@@ -27,6 +27,7 @@ playState.create = function(){
         SHIFT : game.input.keyboard.addKey(Phaser.Keyboard.SHIFT),
         FIRE  : game.input.activePointer.leftButton
     };
+
 };
 
 playState.update = function(){
@@ -42,8 +43,9 @@ playState.update = function(){
 };
 
 playState.spawnEnemy = function(data){
-  console.log(data.id + " (x: " + data.x + ", y: " + data.y + ")");
-  playState.enemies[data.id] = new Enemy(game, data.id, data.x, data.y, 'block');
+  // console.log(data.id + " (x: " + data.x + ", y: " + data.y + ")");
+  var enemy = new Enemy(game, data.id, data.x, data.y, 'block');
+  playState.enemies.add(enemy);
 }
 
 playState.addNewPlayer = function(id,x,y){
@@ -58,8 +60,8 @@ playState.playerFire = function(id, fire){
   playState.playerMap[id].playerFire(id, fire);
 }
 
-playState.shotHit = function(id, bullet){
-  playState.playerMap[id].shotHit(id, enemy, bullet);
+playState.shotHit = function(id, player, enemy){
+  playState.playerMap[id].shotHit(player, enemy);
 }
 
 playState.mouseMove = function() {
@@ -129,5 +131,10 @@ playState.getRandNum = function(min, max){
 }
 
 playState.render = function(){
+  playState.enemies.forEachAlive(playState.renderGroup, this)
   // game.debug.cameraInfo(game.camera, 32, 32);
+}
+
+playState.renderGroup = function(member){
+  game.debug.body(member);
 }

@@ -48,11 +48,11 @@ io.on('connection',function(socket){
         });
 
         socket.on('updateRot', function(data){
-            io.emit('updateRot', { id: socket.player.id, x: data.x, y: data.y });
+          io.emit('updateRot', { id: socket.player.id, x: data.x, y: data.y });
         });
 
         socket.on( 'moveToMouse', function( data ) {
-            io.emit( 'moveToMouse', { plyr: socket.player, status: data.status } );
+          io.emit( 'moveToMouse', { plyr: socket.player, status: data.status } );
         });
 
         socket.on('playerFire', function(data){
@@ -60,7 +60,7 @@ io.on('connection',function(socket){
         });
 
         socket.on('shotHit', function(data){
-          io.emit('shotHit', {id: socket.player.id});
+          io.emit('shotHit', {id: socket.player.id,player: data.player, enemy: data.enemy});
         });
 
         socket.on('disconnect',function(){
@@ -72,12 +72,12 @@ io.on('connection',function(socket){
 function getAllPlayers(){
     var players = [];
     Object.keys(io.sockets.connected).forEach(function(socketID){
-        var player = io.sockets.connected[socketID].player;
-        if(player) players.push(player);
+      var player = io.sockets.connected[socketID].player;
+      if(player) players.push(player);
     });
     return players;
 }
 
 function randomInt (low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
+  return Math.floor(Math.random() * (high - low) + low);
 }
