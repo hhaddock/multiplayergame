@@ -15,25 +15,32 @@ server.listen(3500,function(){
     console.log('Listening on '+ server.address().port);
 });
 
-server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
-server.numEnemies = 10;
-server.enemies = getAllEnemies();
+server.lastPlayerID = 0; // Keep track of the last id assigned to a new player
+server.enemyID = 0;
 io.on('connection',function(socket){
+    socket.on('spawnEnemies', function(data){
+      var enemies = [];
+      for(i = 0; i < 10; i++){
+        var enemy = {
+          id: server.enemyID++,
+          x: randomInt(0, 1020),
+          y: randomInt(0, 720)
+        }
+        enemies.push(enemy)
+        io.emit('spawnEnemies', enemy);
+      }
+    });
+
     socket.on('newplayer',function(data){
         socket.player = {
-            id: server.lastPlayderID++,
-            x: 1000,
-            y: 1000,
+            id: server.lastPlayerID++,
+            x: randomInt(200,400),
+            y: randomInt(200,400),
             dir: "up",
             angle: 0
         };
         socket.emit('allplayers', getAllPlayers());
-        // io.emit('allenemies', getAllEnemies());
         socket.broadcast.emit('newplayer', socket.player);
-
-        socket.on('allEnemies', function(data){
-          io.emit('allEnemies', server.enemies);
-        });
 
         socket.on('updatePos', function(data){
           socket.player.dir = data.dir;
@@ -69,20 +76,6 @@ function getAllPlayers(){
         if(player) players.push(player);
     });
     return players;
-}
-
-function getAllEnemies(){
-  var enemies = [];
-  for(var i = 0; i < server.numEnemies; i++){
-    var enemy = {
-      id: i,
-      x: randomInt(0,2000),
-      y: randomInt(0,2000)
-    };
-    console.log("Enemy #" + enemy.id + "(x: " + enemy.x + ", y: " + enemy.y + ")");
-    enemies.push(enemy);
-  }
-  return enemies;
 }
 
 function randomInt (low, high) {

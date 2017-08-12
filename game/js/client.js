@@ -6,8 +6,8 @@ Client.askNewPlayer = function(){
     Client.socket.emit('newplayer');
 }
 
-Client.getAllEnemies = function(){
-    Client.socket.emit('allEnemies');
+Client.spawnEnemies = function(){
+    Client.socket.emit('spawnEnemies');
 }
 
 Client.sendUpdate = function(speed, dir){
@@ -28,7 +28,6 @@ Client.sendFire = function(){
 
 Client.sendOverlap = function(){
   Client.socket.emit('shotHit');
-  console.log("hit");
 }
 
 //Socket Client Catches
@@ -36,16 +35,13 @@ Client.socket.on('newplayer',function(data){
     playState.addNewPlayer(data.id,data.x,data.y);
 });
 
-
 Client.socket.on('allplayers',function(data){
   for(var i = 0; i < data.length; i++){
     playState.addNewPlayer(data[i].id,data[i].x,data[i].y);
   }
 
-  Client.socket.on('allEnemies', function(data){
-    for(var i = 0; i < data.length; i++){
-      playState.addEnemy(data[i].id, data[i].x, data[i].y);
-    }
+  Client.socket.on('spawnEnemies', function(data){
+    playState.spawnEnemy(data);
   });
 
   Client.socket.on('move',function(data){
