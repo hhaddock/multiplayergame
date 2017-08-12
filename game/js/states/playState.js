@@ -44,8 +44,6 @@ playState.update = function(){
 playState.spawnEnemy = function(data){
   console.log(data.id + " (x: " + data.x + ", y: " + data.y + ")");
   playState.enemies[data.id] = new Enemy(game, data.id, data.x, data.y, 'block');
-  // playState.enemies[data.id] = game.add.sprite(data.x, data.y, 'block');
-  // console.log(playState.enemies)
 }
 
 playState.addNewPlayer = function(id,x,y){
