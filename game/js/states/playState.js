@@ -10,7 +10,7 @@ playState.create = function(){
     game.input.mouse.capture = true;
     this.alphaText = game.add.text(game.world.centerX, 10, 'Alpha Version 1.0', { fontSize: '16px', fill: '#000' });
 
-    this.bg = game.add.tileSprite(0,0,2000,2000, 'bg');
+    this.bg = game.add.tileSprite(0,0,1088,736, 'bg');
     //Create array of players
     this.playerMap = {};
     this.enemies = game.add.group();
