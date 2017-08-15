@@ -14,12 +14,20 @@ Client.sendUpdate = function(speed, dir){
   Client.socket.emit('updatePos', {speed: speed, dir: dir});
 }
 
+Client.showArrows = function(){
+  Client.socket.emit('showArrows');
+}
+
+Client.hideArrows = function(){
+  Client.socket.emit('hideArrows');
+}
+
 Client.sendRot = function(x, y){
   Client.socket.emit('updateRot', {x: x, y: y});
 }
 
 Client.sendMouse = function( data ) {
-    Client.socket.emit( 'moveToMouse', { status: data } );
+  Client.socket.emit( 'moveToMouse', { status: data } );
 }
 
 Client.sendFire = function(){
@@ -68,7 +76,15 @@ Client.socket.on('allplayers',function(data){
   Client.socket.on('shotHit', function(data){
     console.log(data);
     playState.shotHit(data.id, data.player, data.enemy);
-  })
+  });
+
+  // Client.socket.on('showArrows', function(data){
+  //   playState.showArrows(data);
+  // });
+  //
+  // Client.socket.on('hideArrows', function(data){
+  //   playState.hideArrows(data);
+  // });
 
   Client.socket.on('remove',function(id){
     playState.removePlayer(id);

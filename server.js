@@ -63,6 +63,14 @@ io.on('connection',function(socket){
           io.emit('shotHit', {id: socket.player.id,player: data.player, enemy: data.enemy});
         });
 
+        socket.on('showArrows', function(data){
+          io.emit('showArrows', socket.player.id);
+        });
+
+        socket.on('hideArrows', function(data){
+          io.emit('hideArrows', socket.player.id);
+        });
+
         socket.on('disconnect',function(){
           io.emit('remove',socket.player.id);
         });

@@ -11,7 +11,6 @@ playState.create = function(){
     this.alphaText = game.add.text(game.world.centerX, 10, 'Alpha Version 1.0', { fontSize: '16px', fill: '#000' });
 
     this.bg = game.add.tileSprite(0,0,2000,2000, 'bg');
-
     //Create array of players
     this.playerMap = {};
     this.enemies = game.add.group();
@@ -40,11 +39,20 @@ playState.update = function(){
     if(Keys.START.downDuration(10)){
       Client.spawnEnemies();
     }
+    playState.checkEnemies();
 };
+
+playState.checkEnemies = function(){
+  if(this.enemies.countLiving() == 0){
+    Client.showArrows();
+  } else {
+    Client.hideArrows();
+  }
+}
 
 playState.spawnEnemy = function(data){
   // console.log(data.id + " (x: " + data.x + ", y: " + data.y + ")");
-  var enemy = new Enemy(game, data.id, data.x, data.y, 'block');
+  var enemy = new Enemy(game, data.id, data.x, data.y, 'enemy');
   playState.enemies.add(enemy);
 }
 
@@ -72,6 +80,14 @@ playState.playerFire = function(id, fire){
 
 playState.shotHit = function(id, player, enemy){
   playState.playerMap[id].shotHit(player, enemy);
+}
+
+playState.showArrows = function(id){
+  playState.playerMap[id].showArrows();
+}
+
+playState.hideArrows = function(id){
+  playState.playerMap[id].hideArrows();
 }
 
 playState.mouseMove = function() {
@@ -141,7 +157,7 @@ playState.getRandNum = function(min, max){
 }
 
 playState.render = function(){
-  playState.enemies.forEachAlive(playState.renderGroup, this)
+  // playState.enemies.forEachAlive(playState.renderGroup, this)
   // game.debug.cameraInfo(game.camera, 32, 32);
 }
 

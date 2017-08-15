@@ -9,21 +9,46 @@ var Player = function(game, id, x, y, sprite){
   this.body.collideWorldBounds = true;
   this.anchor.set( 0.5 );
 
+  //UI Groups
+  this.health = game.add.group();
+  this.arrows = game.add.group();
+  this.setUI();
+
   //Weapon Info
   this.weapon = game.add.weapon(30, 'bullet');
+  this.weapon.fireRate = 400;
   this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-  this.weapon.bulletSpeed = 1200;
-  this.weapon.fireRate = 100;
+  this.weapon.bulletSpeed = 2400;
   this.weapon.trackSprite(this, 45, 25, true);
 
   //Name Plate
-  this.namePlate = game.add.text(-2, 30, 'Player' + (id + 1), { fontSize: '10px', fill: '#000' });
+  this.namePlate = game.add.text(-2, 30, 'Player' + (id + 1), { fontSize: '12px', fill: '#000' });
   this.addChild(this.namePlate);
   this.game.add.existing(this);
 }
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
+
+Player.prototype.setUI = function(){
+  // this.showArrows();
+  for(i = 0; i < 3; i++){
+    this.health.create(i * 32, 0, 'heart');
+  }
+}
+
+Player.prototype.showArrows = function(){
+  this.arrows.scale.setTo(2);
+  this.arrows.create(game.world.centerX /2, 0, 'up');
+  this.arrows.create(game.world.centerX/2, 335, 'down');
+  this.arrows.create(0, game.world.centerY / 2, 'left');
+  this.arrows.create(510, game.world.centerY/2, 'right');
+  this.arrows.alpha = 1;
+}
+
+Player.prototype.hideArrows = function(){
+  this.arrows.alpha = 0;
+}
 
 Player.prototype.movePlayer = function(id, x, y, dir){
   if(dir == "left")
@@ -64,7 +89,7 @@ Player.prototype.shotHit = function(player, enemy){
 }
 
 Player.prototype.render = function(){
-  game.debug.body(this);
+  // game.debug.body(this);
 }
 
 Player.prototype.movePlayerToMouse = function(id, mouse_drag){
