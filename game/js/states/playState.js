@@ -8,7 +8,7 @@ playState.init = function(){
 
 playState.create = function(){
     game.input.mouse.capture = true;
-    this.alphaText = game.add.text(game.world.centerX - 500, 10, 'Alpha Version 1.0', { fontSize: '16px', fill: '#fff' });
+    this.alphaText = game.add.text(game.world.centerX, 10, 'Alpha Version 1.0', { fontSize: '16px', fill: '#000' });
 
     this.bg = game.add.tileSprite(0,0,2000,2000, 'bg');
 
@@ -49,7 +49,17 @@ playState.spawnEnemy = function(data){
 }
 
 playState.addNewPlayer = function(id,x,y){
-    playState.playerMap[id] = new Player(game, id, x, y, 'block');
+  if(id == 0)
+    playState.playerMap[id] = new Player(game, id, x, y, 'p1');
+  else if(id == 1)
+    playState.playerMap[id] = new Player(game, id, x, y, 'p2');
+  else if(id == 2)
+    playState.playerMap[id] = new Player(game, id, x, y, 'p3');
+  else if(id == 3)
+    playState.playerMap[id] = new Player(game, id, x, y, 'p4');
+  else {
+    playState.playerMap[id] = new Player(game, id, x, y, 'p1');
+  }
 }
 
 playState.sendFire = function(){
