@@ -29,9 +29,13 @@ playState.create = function(){
 }
 
 playState.update = function(){
+    //Player Settings
     playState.playerMovement();
     playState.playerRot();
     playState.gunManager();
+
+    //Enemy Settings
+    playState.aiMovement();
 
     if(Keys.START.downDuration(10)){
       Client.spawnEnemies();
@@ -41,6 +45,16 @@ playState.update = function(){
 playState.spawnEnemy = function(data){
   var enemy = new Enemy(game, data.id, data.x, data.y, 'enemy');
   playState.enemies.add(enemy);
+}
+
+playState.aiMovement = function(){
+  Client.SendAiUpdate();
+}
+
+playState.moveAI = function(){
+  playState.enemies.forEachAlive(function(enemies){
+    game.physics.arcade.moveToObject(enemies, playState.playerMap[0], .2, 5000);
+  });
 }
 
 playState.addNewPlayer = function(id,x,y){

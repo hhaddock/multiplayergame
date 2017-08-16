@@ -46,6 +46,10 @@ io.on('connection',function(socket){
           io.emit('updatePlayerPosition',{player: socket.player, dir: data.dir, totalKeys: data.totalKeys});
         });
 
+        socket.on('updateAiPosition', function(data){
+          io.emit('updateAiPosition');
+        });
+
         socket.on('updateRot', function(data){
           io.emit('updateRot', { id: socket.player.id, x: data.x, y: data.y });
         });
