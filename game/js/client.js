@@ -72,11 +72,6 @@ Client.socket.on('allplayers',function(data){
   Client.socket.on('updateRot',function(data){
     playState.rotatePlayer( data.id, data.x, data.y );
   });
-
-  Client.socket.on( 'moveToMouse', function( data ) {
-    playState.movePlayerToMouse( data.plyr.id, data.status );
-  });
-
   Client.socket.on('playerFire', function(data){
     playState.playerFire(data.id, data.fire);
   });
@@ -89,14 +84,6 @@ Client.socket.on('allplayers',function(data){
     console.log(data);
     playState.shotHit(data.id, data.player, data.enemy);
   });
-
-  // Client.socket.on('showArrows', function(data){
-  //   playState.showArrows(data);
-  // });
-  //
-  // Client.socket.on('hideArrows', function(data){
-  //   playState.hideArrows(data);
-  // });
 
   Client.socket.on('remove',function(id){
     playState.removePlayer(id);

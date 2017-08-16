@@ -61,21 +61,6 @@ playState.moveAI = function(){
 playState.getClosestPlayer = function(enemy){
     var closestPlayer;
     var minDist = 0;
-    // for( id = 0; id < playState.playerMap.length; id++ ){
-    //     var currentPlayer = playState.playerMap[ id ];
-    //     var dX = Math.abs( currentPlayer.x - enemy.x );
-    //     var dY = Math.abs( currentPlayer.y - enemy.y );
-    //     var deltaDist = Math.sqrt( dX * dX + dY * dY );
-    //
-    //     if( deltaDist < minDist ) {
-    //         minDist = deltaDist;
-    //         closestPlayer = currentPlayer;
-    //     }
-    // }
-    // if( !currentPlayer ) {
-    //     currentPlayer = playState.playerMap[ 0 ];
-    // }
-    // return currentPlayer;
     for(i = 0; i < 4; i++){
       var currentPlayer = playState.playerMap[i];
       if(currentPlayer){
@@ -84,13 +69,12 @@ playState.getClosestPlayer = function(enemy){
         var deltaDist = Math.sqrt( dX * dX + dY * dY );
 
         if( deltaDist > minDist ) {
-            minDist = deltaDist;
-            closestPlayer = currentPlayer;
+          minDist = deltaDist;
+          closestPlayer = currentPlayer;
         }
       }
     }
     return closestPlayer;
-
 }
 
 playState.addNewPlayer = function(id,x,y){
