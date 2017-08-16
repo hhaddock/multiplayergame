@@ -34,6 +34,10 @@ Client.sendFire = function(){
   Client.socket.emit('playerFire', {fire: true});
 }
 
+Client.sendReload = function(){
+  Client.socket.emit('playerReload');
+}
+
 Client.sendHit = function(bullet, enemy){
   Client.socket.emit('shotHit', {enemy: enemy.id});
   bullet.kill();
@@ -71,6 +75,10 @@ Client.socket.on('allplayers',function(data){
 
   Client.socket.on('playerFire', function(data){
     playState.playerFire(data.id, data.fire);
+  });
+
+  Client.socket.on('playerReload', function(data){
+    playState.playerReload(data.id);
   });
 
   Client.socket.on('shotHit', function(data){

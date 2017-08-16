@@ -24,7 +24,8 @@ playState.create = function(){
         D     : game.input.keyboard.addKey(Phaser.Keyboard.D),
         START : game.input.keyboard.addKey(Phaser.Keyboard.ENTER),
         SHIFT : game.input.keyboard.addKey(Phaser.Keyboard.SHIFT),
-        FIRE  : game.input.activePointer.leftButton
+        FIRE  : game.input.activePointer.leftButton,
+        RELOAD: game.input.keyboard.addKey(Phaser.Keyboard.R)
     };
 
 };
@@ -32,9 +33,7 @@ playState.create = function(){
 playState.update = function(){
     playState.playerMovement();
     playState.playerRot();
-    if(Keys.FIRE.isDown){
-      playState.sendFire();
-    }
+    playState.gunManager();
 
     if(Keys.START.downDuration(10)){
       Client.spawnEnemies();
@@ -68,14 +67,23 @@ playState.addNewPlayer = function(id,x,y){
   else {
     playState.playerMap[id] = new Player(game, id, x, y, 'p1');
   }
+  playState.playerMap[id].setUI(id);
 }
 
-playState.sendFire = function(){
- Client.sendFire();
+playState.gunManager = function(){
+  if(Keys.FIRE.isDown){
+    Client.sendFire();
+  }
+  if(Keys.RELOAD.downDuration(15)){
+    Client.sendReload();
+  }
 }
-
 playState.playerFire = function(id, fire){
   playState.playerMap[id].playerFire(id, fire);
+}
+
+playState.playerReload = function(id){
+  playState.playerMap[id].playerReload(id);
 }
 
 playState.shotHit = function(id, player, enemy){

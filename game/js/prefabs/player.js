@@ -2,6 +2,7 @@ var Player = function(game, id, x, y, sprite){
   this.game = game;
   this.id = id;
   this.speed = 3;
+  this.bullets = 5;
 
   Phaser.Sprite.call(this, game, x, y, sprite);
   this.game.physics.arcade.enable(this);
@@ -12,11 +13,11 @@ var Player = function(game, id, x, y, sprite){
   //UI Groups
   this.health = game.add.group();
   this.arrows = game.add.group();
-  this.setUI();
 
   //Weapon Info
-  this.weapon = game.add.weapon(30, 'bullet');
+  this.weapon = game.add.weapon(this.bullets, 'bullet');
   this.weapon.fireRate = 400;
+  this.weapon.fireLimit = 5;
   this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
   this.weapon.bulletSpeed = 2400;
   this.weapon.trackSprite(this, 45, 25, true);
@@ -30,10 +31,27 @@ var Player = function(game, id, x, y, sprite){
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 
-Player.prototype.setUI = function(){
-  // this.showArrows();
-  for(i = 0; i < 3; i++){
-    this.health.create(i * 32, 0, 'heart');
+Player.prototype.setUI = function(id, x, y){
+  if(id == 0){
+    this.ammo = game.add.text(40, 675, this.bullets + "/5", { fontSize: '26px', fill: '#fff' });
+    for(i = 0; i < 3; i++){
+      this.health.create((i*32) + 40, 700, 'heart');
+    }
+  } else if(id == 1){
+    this.ammo = game.add.text(312, 675, this.bullets + "/5", { fontSize: '26px', fill: '#fff' });
+    for(i = 0; i < 3; i++){
+      this.health.create((i*32) + 312, 700, 'heart');
+    }
+  } else if(id == 2){
+    this.ammo = game.add.text(584, 675, this.bullets + "/5", { fontSize: '26px', fill: '#fff' });
+    for(i = 0; i < 3; i++){
+      this.health.create((i*32) + 584, 700, 'heart');
+    }
+  } else if(id == 3){
+    this.ammo = game.add.text(856, 675, this.bullets + "/5", { fontSize: '26px', fill: '#fff' });
+    for(i = 0; i < 3; i++){
+      this.health.create((i*32) + 856, 700, 'heart');
+    }
   }
 }
 
@@ -70,13 +88,16 @@ Player.getHit = function(bullet, enemy){
   Client.sendHit(bullet, enemy);
 }
 
-Player.prototype.getPlayer = function(id){
-  return id;
+Player.prototype.playerFire = function(id, fire){
+  if(fire){
+    this.weapon.fire();
+    this.ammo.text = (this.bullets - this.weapon.shots) + "/5"
+  }
 }
 
-Player.prototype.playerFire = function(id, fire){
-  if(fire)
-    this.weapon.fire();
+Player.prototype.playerReload = function(id){
+  this.weapon.resetShots();
+  this.ammo.text = (this.bullets) + "/5"
 }
 
 Player.prototype.shotHit = function(player, enemy){

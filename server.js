@@ -59,6 +59,10 @@ io.on('connection',function(socket){
           io.emit('playerFire', {id: socket.player.id, fire: data.fire});
         });
 
+        socket.on('playerReload', function(data){
+          io.emit('playerReload', {id: socket.player.id});
+        });
+
         socket.on('shotHit', function(data){
           io.emit('shotHit', {id: socket.player.id,player: data.player, enemy: data.enemy});
         });
