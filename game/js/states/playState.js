@@ -79,29 +79,26 @@ playState.shotHit = function(id, player, enemy){
 }
 
 playState.playerMovement = function() {
-    direction = "stop";
-    var num_pressed = 0;
-    var key;
-    for(key in Keys) {
-        if(Keys[key].isDown){
-            num_pressed++;
-            switch(Keys[key]){
-                case Keys.W:
-                    direction = "up";
-                    break;
-                case Keys.S:
-                    direction = "down";
-                    break;
-                case Keys.A:
-                    direction = "left";
-                    break;
-                case Keys.D:
-                    direction = "right";
-                    break;
-            }
-            Client.sendUpdate(speed, direction);
-        }
-        speed = (num_pressed > 1) ? 1.5 : 2;
+    keysPressed = 0;
+    //Up and Down Movement
+    if(Keys.W.isDown){
+      keysPressed++;
+      direction = "up";
+      Client.sendPlayerMovement(direction, keysPressed);
+    } else if(Keys.S.isDown){
+      keysPressed++;
+      direction = "down";
+      Client.sendPlayerMovement(direction, keysPressed);
+    }
+    //Left and right movement
+    if(Keys.A.isDown){
+      keysPressed++;
+      direction = "left";
+      Client.sendPlayerMovement(direction, keysPressed);
+    } else if(Keys.D.isDown){
+      keysPressed++;
+      direction = "right";
+      Client.sendPlayerMovement(direction, keysPressed);
     }
 }
 
@@ -111,8 +108,8 @@ playState.playerRot = function(){
     Client.sendRot(x, y);
 };
 
-playState.movePlayer = function(id, x, y, dir){
-    playState.playerMap[id].movePlayer(id, x, y, dir);
+playState.movePlayer = function(id, x, y, dir, totalKeys){
+    playState.playerMap[id].movePlayer(id, x, y, dir, totalKeys);
 };
 
 playState.rotatePlayer = function(id, x, y){
@@ -130,7 +127,7 @@ playState.getRandNum = function(min, max){
 }
 
 playState.render = function(){
-  
+
 }
 
 playState.renderGroup = function(member){

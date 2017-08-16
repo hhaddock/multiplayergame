@@ -10,8 +10,8 @@ Client.spawnEnemies = function(){
   Client.socket.emit('spawnEnemies');
 }
 
-Client.sendUpdate = function(speed, dir){
-  Client.socket.emit('updatePos', {speed: speed, dir: dir});
+Client.sendPlayerMovement = function(dir, numKeys){
+  Client.socket.emit('sendPlayerMovementUpdate', {dir: dir, totalKeys: numKeys});
 }
 
 Client.showArrows = function(){
@@ -57,12 +57,8 @@ Client.socket.on('allplayers',function(data){
     playState.spawnEnemy(data);
   });
 
-  Client.socket.on('move',function(data){
-    playState.movePlayer(data.id,data.x,data.y);
-  });
-
-  Client.socket.on('update',function(data){
-    playState.movePlayer(data.id,data.x,data.y, data.dir);
+  Client.socket.on('updatePlayerPosition',function(data){
+    playState.movePlayer(data.player.id,data.player.x,data.player.y, data.dir, data.totalKeys);
   });
 
   Client.socket.on('updateRot',function(data){

@@ -42,9 +42,8 @@ io.on('connection',function(socket){
         socket.emit('allplayers', getAllPlayers());
         socket.broadcast.emit('newplayer', socket.player);
 
-        socket.on('updatePos', function(data){
-          socket.player.dir = data.dir;
-          io.emit('update',socket.player);
+        socket.on('sendPlayerMovementUpdate', function(data){
+          io.emit('updatePlayerPosition',{player: socket.player, dir: data.dir, totalKeys: data.totalKeys});
         });
 
         socket.on('updateRot', function(data){
@@ -62,7 +61,7 @@ io.on('connection',function(socket){
         socket.on('shotHit', function(data){
           io.emit('shotHit', {id: socket.player.id,player: data.player, enemy: data.enemy});
         });
-        
+
         socket.on('disconnect',function(){
           io.emit('remove',socket.player.id);
         });

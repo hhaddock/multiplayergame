@@ -55,15 +55,18 @@ Player.prototype.setUI = function(id, x, y){
   }
 }
 
-Player.prototype.movePlayer = function(id, x, y, dir){
+Player.prototype.movePlayer = function(id, x, y, dir, totalKeys){
+  if(totalKeys == 2){
+    this.speed = 2.2;
+  }
   if(dir == "left")
-      this.x -= speed;
+      this.x -= this.speed;
   else if(dir == "right")
-      this.x += speed;
+      this.x += this.speed;
   else if(dir == "up")
-      this.y -= speed;
+      this.y -= this.speed;
   else if(dir == "down")
-      this.y += speed;
+      this.y += this.speed;
 }
 
 Player.prototype.rotatePlayer = function(id, x, y){
