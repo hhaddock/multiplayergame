@@ -11,7 +11,7 @@ playState.create = function(){
     this.bg = game.add.tileSprite(0,0,1088,736, 'bg');
     this.alphaText = game.add.text(10, 10, 'Alpha Version 1.0', { fontSize: '24px', fill: '#fff' });
     //Create array of players
-    this.playerMap = {};
+    this.playerMap = game.add.group();
     this.enemies = game.add.group();
 
     //ask the server to add a new play
@@ -53,7 +53,7 @@ playState.aiMovement = function(){
 
 playState.moveAI = function(){
     playState.enemies.forEachAlive(function(enemy){
-        console.log( playState.getClosestPlayer(enemy).x );
+        // playState.getClosestPlayer(enemy)
         game.physics.arcade.moveToObject(enemy, playState.getClosestPlayer(enemy), .2, 5000);
     });
 }
@@ -61,22 +61,36 @@ playState.moveAI = function(){
 playState.getClosestPlayer = function(enemy){
     var closestPlayer;
     var minDist = 0;
-    console.log( playState.playerMap.length );
-    for( id = 0; id < playState.playerMap.length; id++ ){
-        var currentPlayer = playState.playerMap[ id ];
+    // for( id = 0; id < playState.playerMap.length; id++ ){
+    //     var currentPlayer = playState.playerMap[ id ];
+    //     var dX = Math.abs( currentPlayer.x - enemy.x );
+    //     var dY = Math.abs( currentPlayer.y - enemy.y );
+    //     var deltaDist = Math.sqrt( dX * dX + dY * dY );
+    //
+    //     if( deltaDist < minDist ) {
+    //         minDist = deltaDist;
+    //         closestPlayer = currentPlayer;
+    //     }
+    // }
+    // if( !currentPlayer ) {
+    //     currentPlayer = playState.playerMap[ 0 ];
+    // }
+    // return currentPlayer;
+    for(i = 0; i < 4; i++){
+      var currentPlayer = playState.playerMap[i];
+      if(currentPlayer){
         var dX = Math.abs( currentPlayer.x - enemy.x );
         var dY = Math.abs( currentPlayer.y - enemy.y );
         var deltaDist = Math.sqrt( dX * dX + dY * dY );
 
-        if( deltaDist < minDist ) {
+        if( deltaDist > minDist ) {
             minDist = deltaDist;
             closestPlayer = currentPlayer;
         }
+      }
     }
-    if( !currentPlayer ) {
-        currentPlayer = playState.playerMap[ 0 ];
-    }
-    return currentPlayer;
+    return closestPlayer;
+
 }
 
 playState.addNewPlayer = function(id,x,y){
