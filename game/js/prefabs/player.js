@@ -57,7 +57,7 @@ Player.prototype.setUI = function(id, x, y){
 
 Player.prototype.movePlayer = function(id, x, y, dir, totalKeys){
   if(totalKeys == 2){
-    this.speed = 2.2;
+    this.speed = 2;
   }
   if(dir == "left")
       this.x -= this.speed;
