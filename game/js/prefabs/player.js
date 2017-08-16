@@ -21,11 +21,19 @@ var Player = function(game, id, x, y, sprite){
   this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
   this.weapon.bulletSpeed = 2400;
   this.weapon.trackSprite(this, 45, 25, true);
+  //Weapon SFX
+  this.weapon.gunShotSound = game.add.audio('gunShot');
+  this.weapon.gunShotSound.volume = 0.3;
+  this.weapon.gunReloadSound = game.add.audio('gunReload');
+  this.weapon.gunReloadSound.volume = 0.3;
+
 
   //Name Plate
   this.namePlate = game.add.text(-2, 30, 'Player' + (id + 1), { fontSize: '12px', fill: '#000' });
   this.addChild(this.namePlate);
   this.game.add.existing(this);
+
+  //Audio clips
 }
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -75,13 +83,20 @@ Player.prototype.rotatePlayer = function(id, x, y){
 }
 
 Player.prototype.playerFire = function(id, fire){
+  this.weapon.onFire.add(Player.playGunSound);
   if(fire){
     this.weapon.fire();
     this.ammo.text = (this.bullets - this.weapon.shots) + "/5"
   }
 }
 
+Player.playGunSound = function(bullet, weapon){
+  console.log("Test");
+  weapon.gunShotSound.play();
+}
+
 Player.prototype.playerReload = function(id){
+  this.weapon.gunReloadSound.play();
   this.weapon.resetShots();
   this.ammo.text = (this.bullets) + "/5"
 }
@@ -94,6 +109,7 @@ Player.prototype.shotHit = function(player, enemy){
   playState.enemies.forEach(function(en){
     if(en.id == enemy){
       en.kill();
+      en.playKillSound();
     }
   });
   game.camera.shake(0.002, 250);

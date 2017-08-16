@@ -21,6 +21,11 @@ loadState.preload = function(){
     //Other
     game.load.image('bullet', 'assets/players/bullet.png');
     game.load.image('bg', 'assets/wood.png');
+
+    //Audio
+    game.load.audio('gunShot', 'assets/audio/gunShot.wav');
+    game.load.audio('gunReload', 'assets/audio/gunReload.wav');
+    game.load.audio('enemyHit', 'assets/audio/enemyHit.wav');
 }
 
 loadState.create = function(){

@@ -81,7 +81,6 @@ Client.socket.on('allplayers',function(data){
   });
 
   Client.socket.on('shotHit', function(data){
-    console.log(data);
     playState.shotHit(data.id, data.player, data.enemy);
   });
 
