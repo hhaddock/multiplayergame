@@ -96,7 +96,7 @@ Player.prototype.shotHit = function(player, enemy){
       en.kill();
     }
   });
-  game.camera.shake(0.01, 250);
+  game.camera.shake(0.002, 250);
 }
 
 Player.prototype.movePlayerToMouse = function(id, mouse_drag){
