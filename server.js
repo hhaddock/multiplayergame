@@ -51,10 +51,6 @@ io.on('connection',function(socket){
           io.emit('updateRot', { id: socket.player.id, x: data.x, y: data.y });
         });
 
-        socket.on( 'moveToMouse', function( data ) {
-          io.emit( 'moveToMouse', { plyr: socket.player, status: data.status } );
-        });
-
         socket.on('playerFire', function(data){
           io.emit('playerFire', {id: socket.player.id, fire: data.fire});
         });
@@ -66,15 +62,7 @@ io.on('connection',function(socket){
         socket.on('shotHit', function(data){
           io.emit('shotHit', {id: socket.player.id,player: data.player, enemy: data.enemy});
         });
-
-        socket.on('showArrows', function(data){
-          io.emit('showArrows', socket.player.id);
-        });
-
-        socket.on('hideArrows', function(data){
-          io.emit('hideArrows', socket.player.id);
-        });
-
+        
         socket.on('disconnect',function(){
           io.emit('remove',socket.player.id);
         });

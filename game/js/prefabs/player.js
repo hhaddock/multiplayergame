@@ -55,19 +55,6 @@ Player.prototype.setUI = function(id, x, y){
   }
 }
 
-Player.prototype.showArrows = function(){
-  this.arrows.scale.setTo(2);
-  this.arrows.create(game.world.centerX /2, 0, 'up');
-  this.arrows.create(game.world.centerX/2, 335, 'down');
-  this.arrows.create(0, game.world.centerY / 2, 'left');
-  this.arrows.create(510, game.world.centerY/2, 'right');
-  this.arrows.alpha = 1;
-}
-
-Player.prototype.hideArrows = function(){
-  this.arrows.alpha = 0;
-}
-
 Player.prototype.movePlayer = function(id, x, y, dir){
   if(dir == "left")
       this.x -= speed;
@@ -109,25 +96,13 @@ Player.prototype.shotHit = function(player, enemy){
   game.camera.shake(0.01, 250);
 }
 
-Player.prototype.render = function(){
-  // game.debug.body(this);
-}
-
 Player.prototype.movePlayerToMouse = function(id, mouse_drag){
   if(mouse_drag){
-      /* If true was passed by mouseMove() then begin moving the player
-       * towards mouse position.
-       */
       game.physics.arcade.moveToPointer(this, 400);
-      /* If the player is within the bounds of the mouse's position
-       * then reset player's velocity.
-       */
       if(Phaser.Rectangle.contains(this.body, game.input.x, game.input.y)){
-          this.body.velocity.setTo(0, 0);
+        this.body.velocity.setTo(0, 0);
       }
-  } else {
-      /* Resets player velocity to prevent continuous movement
-       */
+  }else {
       this.body.velocity.setTo(0, 0);
   }
 }
