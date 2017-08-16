@@ -71,10 +71,6 @@ Player.prototype.rotatePlayer = function(id, x, y){
   game.physics.arcade.overlap(this.weapon.bullets, playState.enemies, Player.getHit, null, this);
 }
 
-Player.getHit = function(bullet, enemy){
-  Client.sendHit(bullet, enemy);
-}
-
 Player.prototype.playerFire = function(id, fire){
   if(fire){
     this.weapon.fire();
@@ -85,6 +81,10 @@ Player.prototype.playerFire = function(id, fire){
 Player.prototype.playerReload = function(id){
   this.weapon.resetShots();
   this.ammo.text = (this.bullets) + "/5"
+}
+
+Player.getHit = function(bullet, enemy){
+  Client.sendHit(bullet, enemy);
 }
 
 Player.prototype.shotHit = function(player, enemy){
