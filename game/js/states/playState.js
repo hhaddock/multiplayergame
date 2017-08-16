@@ -11,7 +11,7 @@ playState.create = function(){
     this.bg = game.add.tileSprite(0,0,1088,736, 'bg');
     this.alphaText = game.add.text(10, 10, 'Alpha Version 1.0', { fontSize: '24px', fill: '#fff' });
     //Create array of players
-    this.playerMap = game.add.group();
+    this.playerMap = {};
     this.enemies = game.add.group();
 
     //ask the server to add a new play
@@ -52,20 +52,31 @@ playState.aiMovement = function(){
 }
 
 playState.moveAI = function(){
-  playState.enemies.forEachAlive(function(enemy){
-    game.physics.arcade.moveToObject(enemy, playState.getClosestPlayer(enemy), .2, 5000);
-  });
+    playState.enemies.forEachAlive(function(enemy){
+        console.log( playState.getClosestPlayer(enemy).x );
+        game.physics.arcade.moveToObject(enemy, playState.getClosestPlayer(enemy), .2, 5000);
+    });
 }
 
 playState.getClosestPlayer = function(enemy){
-  var closestPlayer;
-  playState.playerMap.forEach(function(player){
-    console.log(player);
-    if((player.x - enemy.x) < 1000 || (player.y - enemy.y) < 1000){
-      closestPlayer = player;
+    var closestPlayer;
+    var minDist = 0;
+    console.log( playState.playerMap.length );
+    for( id = 0; id < playState.playerMap.length; id++ ){
+        var currentPlayer = playState.playerMap[ id ];
+        var dX = Math.abs( currentPlayer.x - enemy.x );
+        var dY = Math.abs( currentPlayer.y - enemy.y );
+        var deltaDist = Math.sqrt( dX * dX + dY * dY );
+
+        if( deltaDist < minDist ) {
+            minDist = deltaDist;
+            closestPlayer = currentPlayer;
+        }
     }
-  });
-  return playState.playerMap[0];
+    if( !currentPlayer ) {
+        currentPlayer = playState.playerMap[ 0 ];
+    }
+    return currentPlayer;
 }
 
 playState.addNewPlayer = function(id,x,y){
