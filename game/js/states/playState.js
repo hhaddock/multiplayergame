@@ -11,7 +11,7 @@ playState.create = function(){
     this.bg = game.add.tileSprite(0,0,1088,736, 'bg');
     this.alphaText = game.add.text(10, 10, 'Alpha Version 1.0', { fontSize: '24px', fill: '#fff' });
     //Create array of players
-    this.playerMap = {};
+    this.playerMap = game.add.group();
     this.enemies = game.add.group();
 
     //ask the server to add a new play
@@ -52,9 +52,20 @@ playState.aiMovement = function(){
 }
 
 playState.moveAI = function(){
-  playState.enemies.forEachAlive(function(enemies){
-    game.physics.arcade.moveToObject(enemies, playState.playerMap[0], .2, 5000);
+  playState.enemies.forEachAlive(function(enemy){
+    game.physics.arcade.moveToObject(enemy, playState.getClosestPlayer(enemy), .2, 5000);
   });
+}
+
+playState.getClosestPlayer = function(enemy){
+  var closestPlayer;
+  playState.playerMap.forEach(function(player){
+    console.log(player);
+    if((player.x - enemy.x) < 1000 || (player.y - enemy.y) < 1000){
+      closestPlayer = player;
+    }
+  });
+  return playState.playerMap[0];
 }
 
 playState.addNewPlayer = function(id,x,y){
