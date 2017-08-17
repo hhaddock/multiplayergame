@@ -1,5 +1,6 @@
 var playState = {};
-var Keys = {};
+var ActionKeys = {};
+var MovementKeys = {};
 
 playState.init = function(){
     game.stage.disableVisibilityChange = true;
@@ -16,11 +17,19 @@ playState.create = function(){
 
     //ask the server to add a new play
     Client.askNewPlayer();
-    Keys = {
-        W     : game.input.keyboard.addKey(Phaser.Keyboard.W),
-        A     : game.input.keyboard.addKey(Phaser.Keyboard.A),
-        S     : game.input.keyboard.addKey(Phaser.Keyboard.S),
-        D     : game.input.keyboard.addKey(Phaser.Keyboard.D),
+
+    /* I figured splitting up the KBinput groups would help
+     * clean things up. These very well could get moved to
+     * the player class.
+     */
+    MovementKeys = {
+        W: game.input.keyboard.addKey(Phaser.Keyboard.W),
+        A: game.input.keyboard.addKey(Phaser.Keyboard.A),
+        S: game.input.keyboard.addKey(Phaser.Keyboard.S),
+        D: game.input.keyboard.addKey(Phaser.Keyboard.D)
+    };
+
+    ActionKeys = {
         START : game.input.keyboard.addKey(Phaser.Keyboard.ENTER),
         SHIFT : game.input.keyboard.addKey(Phaser.Keyboard.SHIFT),
         FIRE  : game.input.activePointer.leftButton,
@@ -37,18 +46,18 @@ playState.update = function(){
     //Enemy Settings
     playState.aiMovement();
 
-    if(Keys.START.downDuration(10)){
-      Client.spawnEnemies();
+    if(ActionKeys.START.downDuration(10)){
+        Client.spawnEnemies();
     }
 }
 
 playState.spawnEnemy = function(data){
-  var enemy = new Enemy(game, data.id, data.x, data.y, 'enemy');
-  playState.enemies.add(enemy);
+    var enemy = new Enemy(game, data.id, data.x, data.y, 'enemy');
+    playState.enemies.add(enemy);
 }
 
 playState.aiMovement = function(){
-  Client.SendAiUpdate();
+    Client.SendAiUpdate();
 }
 
 playState.moveAI = function(){
@@ -62,77 +71,76 @@ playState.getClosestPlayer = function(enemy){
     var closestPlayer;
     var minDist = 500;
     for(i = 0; i < 4; i++){
-      var currentPlayer = playState.playerMap[i];
-      if(currentPlayer && !enemy.hasTarget){
-        var dX = Math.abs( currentPlayer.x - enemy.x );
-        var dY = Math.abs( currentPlayer.y - enemy.y );
-        var deltaDist = Math.sqrt( dX * dX + dY * dY );
+        var currentPlayer = playState.playerMap[i];
+        if(currentPlayer && !enemy.hasTarget){
+            var dX = Math.abs( currentPlayer.x - enemy.x );
+            var dY = Math.abs( currentPlayer.y - enemy.y );
+            var deltaDist = Math.sqrt( dX * dX + dY * dY );
 
-        if( deltaDist < minDist ) {
-          // minDist = deltaDist;
-          closestPlayer = currentPlayer;
-          enemy.setTarget(closestPlayer);
+            if( deltaDist < minDist ) {
+                closestPlayer = currentPlayer;
+                enemy.setTarget(closestPlayer);
+            }
         }
-      }
     }
 }
 
 playState.addNewPlayer = function(id,x,y){
-  if(id == 0)
-    playState.playerMap[id] = new Player(game, id, x, y, 'p1');
-  else if(id == 1)
-    playState.playerMap[id] = new Player(game, id, x, y, 'p2');
-  else if(id == 2)
-    playState.playerMap[id] = new Player(game, id, x, y, 'p3');
-  else if(id == 3)
-    playState.playerMap[id] = new Player(game, id, x, y, 'p4');
-  else {
-    playState.playerMap[id] = new Player(game, id, x, y, 'p1');
-  }
-  playState.playerMap[id].setUI(id);
+    if(id == 0)
+        playState.playerMap[id] = new Player(game, id, x, y, 'p1');
+    else if(id == 1)
+        playState.playerMap[id] = new Player(game, id, x, y, 'p2');
+    else if(id == 2)
+        playState.playerMap[id] = new Player(game, id, x, y, 'p3');
+    else if(id == 3)
+        playState.playerMap[id] = new Player(game, id, x, y, 'p4');
+    else {
+        playState.playerMap[id] = new Player(game, id, x, y, 'p1');
+    }
+    playState.playerMap[id].setUI(id);
 }
 
 playState.gunManager = function(){
-  if(Keys.FIRE.isDown){
-    Client.sendFire();
-  }
-  if(Keys.RELOAD.downDuration(15)){
-    Client.sendReload();
-  }
+    if(ActionKeys.FIRE.isDown){
+        Client.sendFire();
+    }
+    if(ActionKeys.RELOAD.downDuration(15)){
+        Client.sendReload();
+    }
 }
 playState.playerFire = function(id, fire){
-  playState.playerMap[id].playerFire(id, fire);
+    playState.playerMap[id].playerFire(id, fire);
 }
 
 playState.playerReload = function(id){
-  playState.playerMap[id].playerReload(id);
+    playState.playerMap[id].playerReload(id);
 }
 
 playState.shotHit = function(id, player, enemy){
-  playState.playerMap[id].shotHit(player, enemy);
+    playState.playerMap[id].shotHit(player, enemy);
 }
 
 playState.playerMovement = function() {
     keysPressed = 0;
     //Up and Down Movement
-    if(Keys.W.isDown){
-      keysPressed++;
-      direction = "up";
-      Client.sendPlayerMovement(direction, keysPressed);
-    } else if(Keys.S.isDown){
-      keysPressed++;
-      direction = "down";
-      Client.sendPlayerMovement(direction, keysPressed);
+    if(MovementKeys.W.isDown){
+        keysPressed++;
+        direction = "up";
+        Client.sendPlayerMovement(direction, keysPressed);
+    } else if(MovementKeys.S.isDown){
+        keysPressed++;
+        direction = "down";
+        Client.sendPlayerMovement(direction, keysPressed);
     }
     //Left and right movement
-    if(Keys.A.isDown){
-      keysPressed++;
-      direction = "left";
-      Client.sendPlayerMovement(direction, keysPressed);
-    } else if(Keys.D.isDown){
-      keysPressed++;
-      direction = "right";
-      Client.sendPlayerMovement(direction, keysPressed);
+    if(MovementKeys.A.isDown){
+        keysPressed++;
+        direction = "left";
+        Client.sendPlayerMovement(direction, keysPressed);
+    } else if(MovementKeys.D.isDown){
+        keysPressed++;
+        direction = "right";
+        Client.sendPlayerMovement(direction, keysPressed);
     }
 }
 
@@ -147,7 +155,7 @@ playState.movePlayer = function(id, x, y, dir, totalKeys){
 };
 
 playState.rotatePlayer = function(id, x, y){
-  playState.playerMap[id].rotatePlayer(id, x, y);
+    playState.playerMap[id].rotatePlayer(id, x, y);
 }
 
 playState.removePlayer = function(id){
@@ -165,5 +173,5 @@ playState.render = function(){
 }
 
 playState.renderGroup = function(member){
-  game.debug.body(member);
+    game.debug.body(member);
 }
