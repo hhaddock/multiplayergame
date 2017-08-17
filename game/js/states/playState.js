@@ -135,13 +135,10 @@ playState.shotHit = function(id, player, enemy){
 playState.playerMovement = function() {
     keysPressed = 0;
     for( key in MovementKeys ) {
-        shift = false;
         currentKey = MovementKeys[ key ];
         if( currentKey.code.isDown ) {
             keysPressed++;
-            if( ActionKeys.SHIFT.isDown ) {
-                shift = true;
-            }
+            shift = ( ActionKeys.SHIFT.isDown ) ? true : false;
             Client.sendPlayerMovement(currentKey.dir, keysPressed, shift);
         }
     }
