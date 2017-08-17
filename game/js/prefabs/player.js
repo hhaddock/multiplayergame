@@ -63,18 +63,26 @@ Player.prototype.setUI = function(id, x, y){
   }
 }
 
-Player.prototype.movePlayer = function(id, x, y, dir, totalKeys){
-  if(totalKeys == 2){
-    this.speed = 2;
-  }
-  if(dir == "left")
-      this.x -= this.speed;
-  else if(dir == "right")
-      this.x += this.speed;
-  else if(dir == "up")
-      this.y -= this.speed;
-  else if(dir == "down")
-      this.y += this.speed;
+Player.prototype.movePlayer = function(id, x, y, dir, totalKeys, sprint){
+    var sprintSpeed = 0;
+    if(totalKeys > 1){
+        this.speed = 1;
+        sprintSpeed = .5;
+    } else {
+        this.speed = 2;
+        sprintSpeed = 1;
+    }
+    if( sprint ) {
+        this.speed += sprintSpeed;
+    }
+    if(dir == "left")
+        this.x -= this.speed;
+    else if(dir == "right")
+        this.x += this.speed;
+    else if(dir == "up")
+        this.y -= this.speed;
+    else if(dir == "down")
+        this.y += this.speed;
 }
 
 Player.prototype.rotatePlayer = function(id, x, y){

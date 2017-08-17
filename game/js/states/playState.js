@@ -23,10 +23,22 @@ playState.create = function(){
      * the player class.
      */
     MovementKeys = {
-        W: game.input.keyboard.addKey(Phaser.Keyboard.W),
-        A: game.input.keyboard.addKey(Phaser.Keyboard.A),
-        S: game.input.keyboard.addKey(Phaser.Keyboard.S),
-        D: game.input.keyboard.addKey(Phaser.Keyboard.D)
+        W: {
+            code: game.input.keyboard.addKey(Phaser.Keyboard.W),
+            dir: "up"
+        },
+        A: {
+            code: game.input.keyboard.addKey(Phaser.Keyboard.A),
+            dir: "left"
+        },
+        S: {
+            code: game.input.keyboard.addKey(Phaser.Keyboard.S),
+            dir: "down"
+        },
+        D: {
+            code: game.input.keyboard.addKey(Phaser.Keyboard.D),
+            dir: "right"
+        }
     };
 
     ActionKeys = {
@@ -122,26 +134,38 @@ playState.shotHit = function(id, player, enemy){
 
 playState.playerMovement = function() {
     keysPressed = 0;
+    for( key in MovementKeys ) {
+        shift = false;
+        currentKey = MovementKeys[ key ];
+        if( currentKey.code.isDown ) {
+            keysPressed++;
+            if( ActionKeys.SHIFT.isDown ) {
+                shift = true;
+            }
+            Client.sendPlayerMovement(currentKey.dir, keysPressed, shift);
+        }
+    }
+
     //Up and Down Movement
-    if(MovementKeys.W.isDown){
-        keysPressed++;
-        direction = "up";
-        Client.sendPlayerMovement(direction, keysPressed);
-    } else if(MovementKeys.S.isDown){
-        keysPressed++;
-        direction = "down";
-        Client.sendPlayerMovement(direction, keysPressed);
-    }
-    //Left and right movement
-    if(MovementKeys.A.isDown){
-        keysPressed++;
-        direction = "left";
-        Client.sendPlayerMovement(direction, keysPressed);
-    } else if(MovementKeys.D.isDown){
-        keysPressed++;
-        direction = "right";
-        Client.sendPlayerMovement(direction, keysPressed);
-    }
+    // if(MovementKeys.W.isDown){
+    //     keysPressed++;
+    //     direction = "up";
+    //     Client.sendPlayerMovement(direction, keysPressed);
+    // } else if(MovementKeys.S.isDown){
+    //     keysPressed++;
+    //     direction = "down";
+    //     Client.sendPlayerMovement(direction, keysPressed);
+    // }
+    // //Left and right movement
+    // if(MovementKeys.A.isDown){
+    //     keysPressed++;
+    //     direction = "left";
+    //     Client.sendPlayerMovement(direction, keysPressed);
+    // } else if(MovementKeys.D.isDown){
+    //     keysPressed++;
+    //     direction = "right";
+    //     Client.sendPlayerMovement(direction, keysPressed);
+    // }
 }
 
 playState.playerRot = function(){
@@ -150,8 +174,8 @@ playState.playerRot = function(){
     Client.sendRot(x, y);
 };
 
-playState.movePlayer = function(id, x, y, dir, totalKeys){
-    playState.playerMap[id].movePlayer(id, x, y, dir, totalKeys);
+playState.movePlayer = function(id, x, y, dir, totalKeys, sprint){
+    playState.playerMap[id].movePlayer(id, x, y, dir, totalKeys, sprint);
 };
 
 playState.rotatePlayer = function(id, x, y){

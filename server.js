@@ -43,7 +43,7 @@ io.on('connection',function(socket){
         socket.broadcast.emit('newplayer', socket.player);
 
         socket.on('sendPlayerMovementUpdate', function(data){
-          io.emit('updatePlayerPosition',{player: socket.player, dir: data.dir, totalKeys: data.totalKeys});
+          io.emit('updatePlayerPosition',{player: socket.player, dir: data.dir, totalKeys: data.totalKeys, sprint: data.sprint});
         });
 
         socket.on('updateAiPosition', function(data){

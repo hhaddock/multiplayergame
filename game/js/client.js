@@ -14,8 +14,8 @@ Client.SendAiUpdate = function(){
   Client.socket.emit('updateAiPosition');
 }
 
-Client.sendPlayerMovement = function(dir, numKeys){
-  Client.socket.emit('sendPlayerMovementUpdate', {dir: dir, totalKeys: numKeys});
+Client.sendPlayerMovement = function(dir, numKeys, shift){
+  Client.socket.emit('sendPlayerMovementUpdate', {dir: dir, totalKeys: numKeys, sprint: shift});
 }
 
 Client.showArrows = function(){
@@ -62,7 +62,7 @@ Client.socket.on('allplayers',function(data){
   });
 
   Client.socket.on('updatePlayerPosition',function(data){
-    playState.movePlayer(data.player.id,data.player.x,data.player.y, data.dir, data.totalKeys);
+    playState.movePlayer(data.player.id,data.player.x,data.player.y, data.dir, data.totalKeys, data.sprint);
   });
 
   Client.socket.on('updateAiPosition',function(data){
