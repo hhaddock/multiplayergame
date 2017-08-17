@@ -60,7 +60,7 @@ playState.moveAI = function(){
 
 playState.getClosestPlayer = function(enemy){
     var closestPlayer;
-    var minDist = 600;
+    var minDist = 500;
     for(i = 0; i < 4; i++){
       var currentPlayer = playState.playerMap[i];
       if(currentPlayer && !enemy.hasTarget){
