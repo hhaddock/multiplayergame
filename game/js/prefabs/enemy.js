@@ -2,6 +2,8 @@ var Enemy = function(game, id, x, y, sprite){
   this.game = game;
   this.id = id;
   this.speed = 3;
+  this.hasTarget = false;
+  this.targetPlayer = null;
 
   Phaser.Sprite.call(this, game, x, y, sprite);
   this.game.physics.arcade.enable(this);
@@ -27,4 +29,14 @@ Enemy.prototype.test = function(){
 
 Enemy.prototype.playKillSound = function(){
   this.killSound.play();
+}
+
+Enemy.prototype.setTarget = function(player){
+  this.targetPlayer = player;
+  this.hasTarget = true;
+  console.log(this.targetPlayer.id);
+}
+
+Enemy.prototype.getTarget = function(){
+  return this.targetPlayer;
 }

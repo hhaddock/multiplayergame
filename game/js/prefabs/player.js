@@ -91,7 +91,6 @@ Player.prototype.playerFire = function(id, fire){
 }
 
 Player.playGunSound = function(bullet, weapon){
-  console.log("Test");
   weapon.gunShotSound.play();
 }
 

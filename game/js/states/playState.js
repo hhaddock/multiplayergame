@@ -53,28 +53,28 @@ playState.aiMovement = function(){
 
 playState.moveAI = function(){
     playState.enemies.forEachAlive(function(enemy){
-        // playState.getClosestPlayer(enemy)
-        game.physics.arcade.moveToObject(enemy, playState.getClosestPlayer(enemy), .2, 5000);
+        playState.getClosestPlayer(enemy)
+        game.physics.arcade.moveToObject(enemy, enemy.getTarget(), .2, 5000);
     });
 }
 
 playState.getClosestPlayer = function(enemy){
     var closestPlayer;
-    var minDist = 0;
+    var minDist = 600;
     for(i = 0; i < 4; i++){
       var currentPlayer = playState.playerMap[i];
-      if(currentPlayer){
+      if(currentPlayer && !enemy.hasTarget){
         var dX = Math.abs( currentPlayer.x - enemy.x );
         var dY = Math.abs( currentPlayer.y - enemy.y );
         var deltaDist = Math.sqrt( dX * dX + dY * dY );
 
-        if( deltaDist > minDist ) {
-          minDist = deltaDist;
+        if( deltaDist < minDist ) {
+          // minDist = deltaDist;
           closestPlayer = currentPlayer;
+          enemy.setTarget(closestPlayer);
         }
       }
     }
-    return closestPlayer;
 }
 
 playState.addNewPlayer = function(id,x,y){
